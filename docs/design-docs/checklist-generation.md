@@ -65,3 +65,11 @@
   - 사용자 항목 입력 UI 표시
 
 이 방식은 `page.tsx` 비대화를 막으면서도, 아직 Context나 localStorage 없이 구현 가능한 최소 구조다.
+---
+
+## 2026-04-22 update: save and restore
+
+- `currentChecklist` is saved to `localStorage` under `packup.currentChecklist`.
+- The app restores only the latest single checklist after refresh.
+- Persisted changes are triggered by the same state updates used for scenario selection, item toggle, and item addition.
+- Saved checklist list management is still out of scope for this step.

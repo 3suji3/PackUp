@@ -1,9 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { ChecklistView } from "@/features/checklists/components/ChecklistView";
 import { createChecklist } from "@/features/checklists/create-checklist";
+import {
+  loadCurrentChecklist,
+  saveCurrentChecklist,
+} from "@/features/checklists/storage";
 import type { Checklist, Scenario } from "@/types/checklist";
 
 interface ScenarioCard {
@@ -32,6 +36,22 @@ const scenarios: ScenarioCard[] = [
 
 export default function HomePage() {
   const [currentChecklist, setCurrentChecklist] = useState<Checklist | null>(null);
+  const [hasRestoredChecklist, setHasRestoredChecklist] = useState(false);
+
+  useEffect(() => {
+    queueMicrotask(() => {
+      setCurrentChecklist(loadCurrentChecklist());
+      setHasRestoredChecklist(true);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!hasRestoredChecklist) {
+      return;
+    }
+
+    saveCurrentChecklist(currentChecklist);
+  }, [currentChecklist, hasRestoredChecklist]);
 
   const handleScenarioSelect = (scenario: Scenario) => {
     setCurrentChecklist(createChecklist(scenario));

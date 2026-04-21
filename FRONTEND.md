@@ -70,3 +70,12 @@ src/
 - 서버/API 연동 금지
 - 외부 라이브러리 임의 도입 금지
 - 문서에 없는 확장 기능 임의 추가 금지
+---
+
+## 2026-04-22 update: currentChecklist persistence
+
+- `currentChecklist` is still owned by `src/app/page.tsx`.
+- Persistence is limited to the latest single checklist only.
+- `src/features/checklists/storage.ts` handles `localStorage` read/write with a small runtime shape check.
+- `page.tsx` restores once on initial mount and saves whenever `currentChecklist` changes.
+- Scenario selection, item toggle, and item addition keep using `setCurrentChecklist`, so persistence stays coupled to the same state flow.
