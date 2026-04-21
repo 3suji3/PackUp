@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { ChecklistView } from "@/features/checklists/components/ChecklistView";
 import { createChecklist } from "@/features/checklists/create-checklist";
 import type { Checklist, Scenario } from "@/types/checklist";
 
@@ -18,8 +19,8 @@ const scenarios: ScenarioCard[] = [
     tag: "travel",
   },
   {
-    title: "학교",
-    description: "학교 가기 전에 챙길 기본 준비물을 빠르게 확인해요.",
+    title: "등교",
+    description: "등교 가기 전에 책가방 기본 준비물을 빠르게 확인해요.",
     tag: "school",
   },
   {
@@ -36,6 +37,22 @@ export default function HomePage() {
     setCurrentChecklist(createChecklist(scenario));
   };
 
+  const handleToggleItem = (itemId: string) => {
+    setCurrentChecklist((prevChecklist) => {
+      if (!prevChecklist) {
+        return prevChecklist;
+      }
+
+      return {
+        ...prevChecklist,
+        updatedAt: Date.now(),
+        items: prevChecklist.items.map((item) =>
+          item.id === itemId ? { ...item, checked: !item.checked } : item,
+        ),
+      };
+    });
+  };
+
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,#fff6ec_0%,#fffaf5_48%,#f7efe5_100%)] px-6 py-10 text-stone-900">
       <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-6xl flex-col justify-center gap-8">
@@ -46,14 +63,15 @@ export default function HomePage() {
           <div className="mt-6 grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
             <div className="space-y-4">
               <p className="font-[family-name:var(--font-display)] text-5xl leading-tight text-stone-900 md:text-6xl">
-                상황을 고르면
+                상황만 고르면
                 <br />
                 준비가 가벼워집니다
               </p>
               <p className="max-w-2xl text-lg leading-8 text-stone-600">
                 PackUp은 상황에 맞는 준비물 체크리스트를 빠르게 시작할 수 있도록
-                도와주는 앱입니다. 이번 단계에서는 홈 화면에서 상황을 선택하면 새
-                체크리스트를 즉시 생성해 다음 화면으로 이어질 임시 흐름을 만듭니다.
+                도와주는 앱입니다. 이번 단계에서는 첫 화면에서 상황을 선택하면
+                생성된 체크리스트를 별도 화면 컴포넌트로 전달하고, 그 안에서 체크
+                상태를 바로 바꿀 수 있게 연결합니다.
               </p>
             </div>
             <div className="rounded-[28px] bg-[#fff2dd] p-6">
@@ -61,11 +79,12 @@ export default function HomePage() {
                 Current Flow
               </p>
               <p className="mt-3 text-2xl font-bold text-stone-900">
-                상황 선택과 체크리스트 생성 연결
+                상황 선택과 체크리스트 확인
               </p>
               <p className="mt-2 text-sm leading-6 text-stone-600">
-                카드를 클릭하면 `createChecklist`가 실행되고, 생성된 결과를 임시
-                상태에 연결해 다음 단계 구현에 바로 사용할 수 있게 둡니다.
+                카드를 누르면 `createChecklist`가 실행되고, 생성된 결과를 분리된
+                체크리스트 화면으로 전달합니다. 체크 상태 변경도 같은 로컬 상태에서
+                바로 반영됩니다.
               </p>
             </div>
           </div>
@@ -99,69 +118,22 @@ export default function HomePage() {
                 Generated Checklist
               </p>
               <h2 className="mt-2 text-3xl font-bold text-stone-900">
-                {currentChecklist ? currentChecklist.title : "아직 생성된 체크리스트가 없어요"}
+                {currentChecklist
+                  ? currentChecklist.title
+                  : "아직 생성된 체크리스트가 없어요"}
               </h2>
             </div>
             <p className="max-w-xl text-sm leading-6 text-stone-500">
               {currentChecklist
-                ? "선택한 상황으로 새 체크리스트가 만들어졌습니다. 이 결과는 저장되지 않으며, 다음 단계 연결을 위한 임시 상태로만 유지됩니다."
-                : "상황 카드를 누르면 템플릿 기반 체크리스트가 생성되고, 여기에서 바로 결과를 확인할 수 있습니다."}
+                ? "선택한 상황으로 만든 체크리스트입니다. 각 항목을 바로 체크하거나 해제할 수 있습니다."
+                : "상황 카드를 누르면 템플릿 기반 체크리스트가 생성되고, 분리된 체크리스트 화면에서 결과를 확인할 수 있습니다."}
             </p>
           </div>
 
-          {currentChecklist ? (
-            <div className="mt-6 grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
-              <div className="rounded-[24px] bg-stone-50 p-5">
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-400">
-                  Summary
-                </p>
-                <dl className="mt-4 space-y-3 text-sm text-stone-600">
-                  <div className="flex items-center justify-between gap-4">
-                    <dt>scenario</dt>
-                    <dd className="font-semibold text-stone-900">
-                      {currentChecklist.scenario}
-                    </dd>
-                  </div>
-                  <div className="flex items-center justify-between gap-4">
-                    <dt>items</dt>
-                    <dd className="font-semibold text-stone-900">
-                      {currentChecklist.items.length}
-                    </dd>
-                  </div>
-                  <div className="flex items-center justify-between gap-4">
-                    <dt>createdAt</dt>
-                    <dd className="font-semibold text-stone-900">
-                      {new Date(currentChecklist.createdAt).toLocaleTimeString("ko-KR")}
-                    </dd>
-                  </div>
-                </dl>
-              </div>
-
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-400">
-                  Items Preview
-                </p>
-                <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-                  {currentChecklist.items.map((item) => (
-                    <li
-                      key={item.id}
-                      className="rounded-[20px] border border-stone-200 bg-stone-50 px-4 py-3 text-sm text-stone-700"
-                    >
-                      <span className="font-medium text-stone-900">{item.name}</span>
-                      <span className="mt-1 block text-xs uppercase tracking-[0.16em] text-stone-400">
-                        {item.checked ? "checked" : "unchecked"}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          ) : (
-            <div className="mt-6 rounded-[24px] border border-dashed border-stone-300 bg-stone-50 px-5 py-8 text-center text-sm leading-7 text-stone-500">
-              선택된 상황이 아직 없습니다. 위 카드 중 하나를 눌러 체크리스트 생성
-              흐름을 시작해 보세요.
-            </div>
-          )}
+          <ChecklistView
+            checklist={currentChecklist}
+            onToggleItem={handleToggleItem}
+          />
         </section>
       </div>
     </main>
