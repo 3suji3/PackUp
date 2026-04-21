@@ -29,3 +29,9 @@
 - 선택지: 모두 `page.tsx`에서 처리 / 입력 UI는 `ChecklistView`, 실제 상태 변경은 `page.tsx`
 - 선택 이유: 화면은 feature 컴포넌트에 두고, `currentChecklist.items` 변경과 `updatedAt` 갱신은 페이지 상태에서 처리하면 MVP에서 가장 단순하게 설명 가능하다.
 - trade-off: 입력창 값은 컴포넌트 로컬 상태라서, 이후 여러 화면 공유가 필요하면 상태 위치를 다시 검토해야 한다.
+### currentChecklist localStorage persistence
+
+- 문제 상황: 새로고침 이후 마지막 체크리스트를 복원해야 하지만, 여러 체크리스트 목록 저장까지 한 번에 도입하면 MVP 범위를 넘기게 된다.
+- 선택지: 마지막 `currentChecklist` 1개만 저장 / 저장된 체크리스트 목록 전체를 먼저 설계
+- 선택 이유: 현재 화면 구조와 상태 소유권이 `page.tsx`의 단일 `currentChecklist`에 맞춰져 있어 최소 변경으로 구현 가능하다.
+- trade-off: 여러 체크리스트 재사용 기능으로 확장할 때는 별도 저장 컬렉션 구조를 추가 설계해야 한다.

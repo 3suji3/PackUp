@@ -90,3 +90,12 @@ export interface Checklist {
 - Context API 도입 여부 검토
 
 현재는 확장을 위해 구조만 열어 두고, 구현은 페이지 로컬 상태에 머문다.
+---
+
+## 2026-04-22 update: localStorage restore
+
+- Storage scope: only the latest `currentChecklist`
+- Storage key: `packup.currentChecklist`
+- Restore timing: once after the client page mounts
+- Save timing: every time `currentChecklist` changes
+- Ownership stays in `src/app/page.tsx`; persistence I/O is separated into `src/features/checklists/storage.ts`
