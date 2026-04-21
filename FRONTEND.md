@@ -72,10 +72,15 @@ src/
 - 문서에 없는 확장 기능 임의 추가 금지
 ---
 
-## 2026-04-22 update: currentChecklist persistence
+## 2026-04-22 update: saved checklist list
 
-- `currentChecklist` is still owned by `src/app/page.tsx`.
-- Persistence is limited to the latest single checklist only.
-- `src/features/checklists/storage.ts` handles `localStorage` read/write with a small runtime shape check.
-- `page.tsx` restores once on initial mount and saves whenever `currentChecklist` changes.
-- Scenario selection, item toggle, and item addition keep using `setCurrentChecklist`, so persistence stays coupled to the same state flow.
+- `src/app/page.tsx` owns two page-level states:
+  - `currentChecklist`
+  - `savedChecklists`
+- `src/features/checklists/storage.ts` now handles two `localStorage` keys with the same runtime shape check:
+  - `packup.currentChecklist`
+  - `packup.savedChecklists`
+- `currentChecklist` remains the editing target for scenario selection, item toggle, item addition, and refresh restore.
+- Reusable save is explicit: the user presses the save button to copy the current checklist into `savedChecklists`.
+- Saved list rendering is separated into `src/features/checklists/components/SavedChecklistList.tsx`.
+- Selecting a saved checklist replaces `currentChecklist`, so the existing checklist view and edit flow can be reused without Context or route changes.

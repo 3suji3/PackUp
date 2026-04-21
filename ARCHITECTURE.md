@@ -92,10 +92,14 @@ export interface Checklist {
 현재는 확장을 위해 구조만 열어 두고, 구현은 페이지 로컬 상태에 머문다.
 ---
 
-## 2026-04-22 update: localStorage restore
+## 2026-04-22 update: checklist persistence expansion
 
-- Storage scope: only the latest `currentChecklist`
-- Storage key: `packup.currentChecklist`
-- Restore timing: once after the client page mounts
-- Save timing: every time `currentChecklist` changes
-- Ownership stays in `src/app/page.tsx`; persistence I/O is separated into `src/features/checklists/storage.ts`
+- Storage is split into two keys:
+  - `packup.currentChecklist`: latest working checklist
+  - `packup.savedChecklists`: reusable saved checklist array
+- Restore timing: both values are restored once after the client page mounts.
+- Save timing:
+  - `currentChecklist` is saved whenever the current working checklist changes.
+  - `savedChecklists` is saved whenever the saved checklist array changes.
+- Ownership stays in `src/app/page.tsx`; persistence I/O remains in `src/features/checklists/storage.ts`.
+- Saving to the reusable list uses checklist `id` as the stable key, so re-saving the same checklist updates the existing entry instead of duplicating it.

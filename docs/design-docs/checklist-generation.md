@@ -67,9 +67,10 @@
 이 방식은 `page.tsx` 비대화를 막으면서도, 아직 Context나 localStorage 없이 구현 가능한 최소 구조다.
 ---
 
-## 2026-04-22 update: save and restore
+## 2026-04-22 update: save list and restore
 
-- `currentChecklist` is saved to `localStorage` under `packup.currentChecklist`.
-- The app restores only the latest single checklist after refresh.
-- Persisted changes are triggered by the same state updates used for scenario selection, item toggle, and item addition.
-- Saved checklist list management is still out of scope for this step.
+- `currentChecklist` is still saved to `localStorage` under `packup.currentChecklist`.
+- A reusable checklist list is additionally saved under `packup.savedChecklists`.
+- Scenario selection still creates the working checklist first, and the user explicitly adds that checklist to the saved list with a save action.
+- Selecting a saved checklist loads that entry back into `currentChecklist`.
+- The checklist item view keeps working on `currentChecklist`, so toggle and add-item behavior do not need a separate flow for saved entries.

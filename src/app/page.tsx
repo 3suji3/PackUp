@@ -3,10 +3,13 @@
 import { useEffect, useState } from "react";
 
 import { ChecklistView } from "@/features/checklists/components/ChecklistView";
+import { SavedChecklistList } from "@/features/checklists/components/SavedChecklistList";
 import { createChecklist } from "@/features/checklists/create-checklist";
 import {
   loadCurrentChecklist,
+  loadSavedChecklists,
   saveCurrentChecklist,
+  saveSavedChecklists,
 } from "@/features/checklists/storage";
 import type { Checklist, Scenario } from "@/types/checklist";
 
@@ -24,7 +27,7 @@ const scenarios: ScenarioCard[] = [
   },
   {
     title: "등교",
-    description: "등교 가기 전에 책가방 기본 준비물을 빠르게 확인해요.",
+    description: "등교 가기 전에 책가방과 기본 준비물을 빠르게 확인해요.",
     tag: "school",
   },
   {
@@ -36,11 +39,13 @@ const scenarios: ScenarioCard[] = [
 
 export default function HomePage() {
   const [currentChecklist, setCurrentChecklist] = useState<Checklist | null>(null);
+  const [savedChecklists, setSavedChecklists] = useState<Checklist[]>([]);
   const [hasRestoredChecklist, setHasRestoredChecklist] = useState(false);
 
   useEffect(() => {
     queueMicrotask(() => {
       setCurrentChecklist(loadCurrentChecklist());
+      setSavedChecklists(loadSavedChecklists());
       setHasRestoredChecklist(true);
     });
   }, []);
@@ -52,6 +57,14 @@ export default function HomePage() {
 
     saveCurrentChecklist(currentChecklist);
   }, [currentChecklist, hasRestoredChecklist]);
+
+  useEffect(() => {
+    if (!hasRestoredChecklist) {
+      return;
+    }
+
+    saveSavedChecklists(savedChecklists);
+  }, [savedChecklists, hasRestoredChecklist]);
 
   const handleScenarioSelect = (scenario: Scenario) => {
     setCurrentChecklist(createChecklist(scenario));
@@ -100,6 +113,33 @@ export default function HomePage() {
     });
   };
 
+  const handleSaveChecklist = () => {
+    if (!currentChecklist) {
+      return;
+    }
+
+    setSavedChecklists((prevChecklists) => {
+      const nextChecklists = prevChecklists.filter(
+        (checklist) => checklist.id !== currentChecklist.id,
+      );
+
+      return [currentChecklist, ...nextChecklists].sort(
+        (left, right) => right.updatedAt - left.updatedAt,
+      );
+    });
+  };
+
+  const handleSelectSavedChecklist = (checklistId: string) => {
+    const selectedChecklist =
+      savedChecklists.find((checklist) => checklist.id === checklistId) ?? null;
+
+    if (!selectedChecklist) {
+      return;
+    }
+
+    setCurrentChecklist(selectedChecklist);
+  };
+
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,#fff6ec_0%,#fffaf5_48%,#f7efe5_100%)] px-6 py-10 text-stone-900">
       <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-6xl flex-col justify-center gap-8">
@@ -117,8 +157,8 @@ export default function HomePage() {
               <p className="max-w-2xl text-lg leading-8 text-stone-600">
                 PackUp은 상황에 맞는 준비물 체크리스트를 빠르게 시작할 수 있도록
                 도와주는 앱입니다. 이번 단계에서는 첫 화면에서 상황을 선택하면
-                생성된 체크리스트를 별도 화면 컴포넌트로 전달하고, 그 안에서 체크
-                상태를 바로 바꿀 수 있게 연결합니다.
+                생성된 체크리스트를 바로 확인하고, 필요한 체크리스트를 여러 개
+                저장해 다시 불러올 수 있게 연결합니다.
               </p>
             </div>
             <div className="rounded-[28px] bg-[#fff2dd] p-6">
@@ -126,12 +166,12 @@ export default function HomePage() {
                 Current Flow
               </p>
               <p className="mt-3 text-2xl font-bold text-stone-900">
-                상황 선택과 체크리스트 확인
+                상황 선택과 저장 목록 관리
               </p>
               <p className="mt-2 text-sm leading-6 text-stone-600">
-                카드를 누르면 `createChecklist`가 실행되고, 생성된 결과를 분리된
-                체크리스트 화면으로 전달합니다. 체크 상태 변경도 같은 로컬 상태에서
-                바로 반영됩니다.
+                카드를 누르면 `createChecklist`가 실행되고, 현재 체크리스트를
+                바로 편집할 수 있습니다. 저장 버튼을 누른 체크리스트는 별도
+                목록에 쌓이고, 다시 선택하면 현재 체크리스트로 불러옵니다.
               </p>
             </div>
           </div>
@@ -172,8 +212,22 @@ export default function HomePage() {
             </div>
             <p className="max-w-xl text-sm leading-6 text-stone-500">
               {currentChecklist
-                ? "선택한 상황으로 만든 체크리스트입니다. 각 항목을 바로 체크하거나 해제할 수 있습니다."
-                : "상황 카드를 누르면 템플릿 기반 체크리스트가 생성되고, 분리된 체크리스트 화면에서 결과를 확인할 수 있습니다."}
+                ? "선택한 상황으로 만든 체크리스트입니다. 항목을 바로 체크하거나 직접 준비물을 추가할 수 있습니다."
+                : "상황 카드를 누르면 템플릿 기반 체크리스트가 생성되고, 아래 영역에서 결과를 확인할 수 있습니다."}
+            </p>
+          </div>
+
+          <div className="mt-6 flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={handleSaveChecklist}
+              disabled={!currentChecklist}
+              className="inline-flex h-11 items-center justify-center rounded-[16px] bg-stone-900 px-5 text-sm font-semibold text-white transition hover:bg-orange-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-stone-300 disabled:text-stone-100"
+            >
+              현재 체크리스트 저장
+            </button>
+            <p className="flex items-center text-sm leading-6 text-stone-500">
+              저장한 체크리스트는 아래 목록에서 다시 불러올 수 있습니다.
             </p>
           </div>
 
@@ -182,6 +236,30 @@ export default function HomePage() {
             onToggleItem={handleToggleItem}
             onAddItem={handleAddItem}
           />
+        </section>
+
+        <section className="rounded-[32px] border border-stone-200/70 bg-white/85 p-8 shadow-[0_16px_48px_rgba(120,94,70,0.08)]">
+          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-400">
+                Saved Checklists
+              </p>
+              <h2 className="mt-2 text-3xl font-bold text-stone-900">
+                저장한 체크리스트 목록
+              </h2>
+            </div>
+            <p className="max-w-xl text-sm leading-6 text-stone-500">
+              여러 체크리스트를 기기 안에 저장해 두고, 필요한 순간 현재 체크리스트로 다시 불러옵니다.
+            </p>
+          </div>
+
+          <div className="mt-6">
+            <SavedChecklistList
+              savedChecklists={savedChecklists}
+              currentChecklistId={currentChecklist?.id ?? null}
+              onSelectChecklist={handleSelectSavedChecklist}
+            />
+          </div>
         </section>
       </div>
     </main>
