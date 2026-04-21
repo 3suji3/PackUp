@@ -88,9 +88,11 @@ export interface Checklist {
 기본 흐름:
 1. 사용자가 시나리오를 선택한다.
 2. 선택한 `Scenario`로 템플릿 데이터를 찾는다.
-3. 템플릿의 `title`, `items`를 기반으로 새로운 `Checklist`를 만든다.
-4. 사용자는 아이템 체크 상태를 수정하거나 항목을 추가한다.
-5. 수정된 체크리스트를 localStorage에 저장한다.
+3. `createChecklist`가 템플릿의 `title`, `items`를 기반으로 새로운 `Checklist`를 만든다.
+4. 이때 체크리스트 `id`, 각 아이템 `id`, `createdAt`, `updatedAt`은 새로 생성한다.
+5. 생성된 모든 아이템은 `checked: false`로 시작한다.
+6. 사용자는 아이템 체크 상태를 수정하거나 항목을 추가한다.
+7. 수정된 체크리스트를 localStorage에 저장한다.
 
 ---
 
