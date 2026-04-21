@@ -53,6 +53,33 @@ export default function HomePage() {
     });
   };
 
+  const handleAddItem = (itemName: string) => {
+    const trimmedItemName = itemName.trim();
+
+    if (!trimmedItemName) {
+      return;
+    }
+
+    setCurrentChecklist((prevChecklist) => {
+      if (!prevChecklist) {
+        return prevChecklist;
+      }
+
+      return {
+        ...prevChecklist,
+        updatedAt: Date.now(),
+        items: [
+          ...prevChecklist.items,
+          {
+            id: crypto.randomUUID(),
+            name: trimmedItemName,
+            checked: false,
+          },
+        ],
+      };
+    });
+  };
+
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,#fff6ec_0%,#fffaf5_48%,#f7efe5_100%)] px-6 py-10 text-stone-900">
       <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-6xl flex-col justify-center gap-8">
@@ -133,6 +160,7 @@ export default function HomePage() {
           <ChecklistView
             checklist={currentChecklist}
             onToggleItem={handleToggleItem}
+            onAddItem={handleAddItem}
           />
         </section>
       </div>
