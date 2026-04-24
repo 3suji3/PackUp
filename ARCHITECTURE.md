@@ -100,6 +100,15 @@ export interface Checklist {
 - Restore timing: both values are restored once after the client page mounts.
 - Save timing:
   - `currentChecklist` is saved whenever the current working checklist changes.
-  - `savedChecklists` is saved whenever the saved checklist array changes.
+- `savedChecklists` is saved whenever the saved checklist array changes.
 - Ownership stays in `src/app/page.tsx`; persistence I/O remains in `src/features/checklists/storage.ts`.
 - Saving to the reusable list uses checklist `id` as the stable key, so re-saving the same checklist updates the existing entry instead of duplicating it.
+
+## 2026-04-25 update: saved checklist deletion
+
+- Saved checklist deletion is handled in `src/app/page.tsx` because one action can affect both `savedChecklists` and `currentChecklist`.
+- Delete flow:
+  1. remove the checklist from `savedChecklists`
+  2. clear `currentChecklist` if it matches the deleted checklist id
+- Existing persistence effects continue to sync both updated states into `localStorage`, so no extra delete-specific storage layer is added.
+- Scenario card markup is moved into `src/features/checklists/components/ScenarioSelector.tsx` to keep the page component from growing further without changing state ownership.

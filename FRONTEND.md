@@ -84,3 +84,14 @@ src/
 - Reusable save is explicit: the user presses the save button to copy the current checklist into `savedChecklists`.
 - Saved list rendering is separated into `src/features/checklists/components/SavedChecklistList.tsx`.
 - Selecting a saved checklist replaces `currentChecklist`, so the existing checklist view and edit flow can be reused without Context or route changes.
+
+## 2026-04-25 update: delete action and scenario UI split
+
+- `src/features/checklists/components/ScenarioSelector.tsx` owns only the scenario card rendering.
+- `src/app/page.tsx` still owns the page-level state and action handlers for:
+  - scenario selection
+  - current checklist editing
+  - saved checklist selection
+  - saved checklist deletion
+- `SavedChecklistList` remains a presentational component and now exposes both select and delete actions per saved checklist row.
+- When the user deletes the saved checklist that is currently loaded, `currentChecklist` is reset to `null` so the working area returns to the empty state instead of showing deleted data.

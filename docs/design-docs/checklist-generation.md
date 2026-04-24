@@ -74,3 +74,10 @@
 - Scenario selection still creates the working checklist first, and the user explicitly adds that checklist to the saved list with a save action.
 - Selecting a saved checklist loads that entry back into `currentChecklist`.
 - The checklist item view keeps working on `currentChecklist`, so toggle and add-item behavior do not need a separate flow for saved entries.
+
+## 2026-04-25 update: saved checklist delete behavior
+
+- Each saved checklist row provides a delete action in addition to the select action.
+- Deleting a saved checklist removes it from the saved list immediately.
+- If the deleted checklist is also the current working checklist, the main checklist area returns to its empty state.
+- Because page-level persistence already watches both states, the same deletion is reflected in `localStorage` without adding a separate storage branch.
