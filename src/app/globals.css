@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc;
+  --background: #fff7ed;
   --foreground: #111827;
   --font-body: "Inter", "Segoe UI", sans-serif;
   --font-display: "Inter", "Segoe UI", sans-serif;
@@ -36,8 +36,8 @@ select {
 }
 
 ::selection {
-  background: #dbeafe;
-  color: #1e3a8a;
+  background: #fed7aa;
+  color: #7c2d12;
 }
 
 @keyframes packup-enter {
@@ -54,4 +54,22 @@ select {
 
 .animate-packup-enter {
   animation: packup-enter 220ms ease-out both;
+}
+
+@keyframes packup-check {
+  0% {
+    transform: scale(1);
+  }
+
+  45% {
+    transform: scale(1.015);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-packup-check {
+  animation: packup-check 180ms ease-out both;
 }

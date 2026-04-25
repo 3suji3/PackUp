@@ -42,8 +42,8 @@ export function SavedChecklistList({
             <div
               className={`animate-packup-enter rounded-3xl border px-5 py-4 transition duration-200 ${
                 isActive
-                  ? "border-blue-200 bg-blue-50 shadow-[0_12px_30px_rgba(37,99,235,0.10)]"
-                  : "border-slate-200 bg-white hover:border-blue-200 hover:bg-blue-50/40"
+                  ? "border-orange-200 bg-orange-50 shadow-[0_12px_30px_rgba(124,45,18,0.10)]"
+                  : "border-slate-200 bg-white hover:border-orange-200 hover:bg-orange-50/50"
               }`}
             >
               <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
@@ -54,7 +54,7 @@ export function SavedChecklistList({
                   <button
                     type="button"
                     onClick={() => onSelectChecklist(checklist.id)}
-                    className="mt-2 block w-full rounded-xl text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white active:scale-[0.99]"
+                    className="mt-2 block w-full rounded-xl text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white active:scale-[0.99]"
                   >
                     <h3 className="truncate text-lg font-bold text-slate-950">
                       {checklist.title}

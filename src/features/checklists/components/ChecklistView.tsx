@@ -49,14 +49,34 @@ export function ChecklistView({
   }
 
   const checkedCount = checklist.items.filter((item) => item.checked).length;
+  const totalCount = checklist.items.length;
+  const progressPercent = totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0;
+  const progressMessage =
+    progressPercent === 100
+      ? "다 챙겼어요!"
+      : progressPercent >= 60
+        ? "거의 다 챙겼어요!"
+        : "하나씩 챙겨볼까요?";
 
   return (
     <div className="mt-6 grid animate-packup-enter gap-6 lg:grid-cols-[0.8fr_1.2fr]">
-      <div className="rounded-2xl bg-slate-50 p-5">
-        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">
+      <div className="rounded-2xl bg-orange-50 p-5">
+        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-orange-700">
           준비 현황
         </p>
-        <dl className="mt-4 space-y-3 text-sm text-slate-600">
+        <p className="mt-3 text-2xl font-bold text-slate-950">
+          {checkedCount} / {totalCount} 챙김
+        </p>
+        <p className="mt-1 text-sm font-semibold text-orange-700">
+          {progressMessage}
+        </p>
+        <div className="mt-4 h-3 overflow-hidden rounded-full bg-white">
+          <div
+            className="h-full rounded-full bg-orange-500 transition-all duration-300 ease-out"
+            style={{ width: `${progressPercent}%` }}
+          />
+        </div>
+        <dl className="mt-5 space-y-3 text-sm text-slate-600">
           <div className="flex items-center justify-between gap-4">
             <dt>상황</dt>
             <dd className="font-semibold text-slate-950">
@@ -66,7 +86,7 @@ export function ChecklistView({
           <div className="flex items-center justify-between gap-4">
             <dt>챙긴 물건</dt>
             <dd className="font-semibold text-slate-950">
-              {checkedCount}/{checklist.items.length}
+              {checkedCount}/{totalCount}
             </dd>
           </div>
           <div className="flex items-center justify-between gap-4">
@@ -92,11 +112,11 @@ export function ChecklistView({
               value={newItemName}
               onChange={(event) => setNewItemName(event.target.value)}
               placeholder="필요한 물건을 직접 추가해보세요"
-              className="h-12 flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-950 outline-none transition focus:border-blue-300 focus:bg-white focus:ring-2 focus:ring-blue-100"
+              className="h-12 flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm text-slate-950 outline-none transition focus:border-orange-300 focus:bg-white focus:ring-2 focus:ring-orange-100"
             />
             <button
               type="submit"
-              className="inline-flex h-12 items-center justify-center rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white transition duration-150 hover:bg-blue-700 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+              className="inline-flex h-12 items-center justify-center rounded-xl bg-rose-600 px-5 text-sm font-semibold text-white transition duration-150 hover:bg-rose-700 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2"
             >
               추가하기
             </button>
@@ -108,15 +128,15 @@ export function ChecklistView({
               <label
                 className={`flex cursor-pointer items-center gap-4 rounded-2xl border px-4 py-4 text-sm text-slate-700 transition duration-200 ${
                   item.checked
-                    ? "border-blue-200 bg-blue-50"
-                    : "border-slate-200 bg-slate-50 hover:border-blue-200 hover:bg-blue-50/50"
+                    ? "animate-packup-check border-orange-200 bg-orange-50"
+                    : "border-slate-200 bg-slate-50 hover:border-orange-200 hover:bg-orange-50/70"
                 }`}
               >
                 <input
                   type="checkbox"
                   checked={item.checked}
                   onChange={() => onToggleItem(item.id)}
-                  className="h-5 w-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                  className="h-5 w-5 rounded border-slate-300 text-orange-600 focus:ring-orange-500"
                 />
                 <div className="min-w-0 flex-1">
                   <span
@@ -128,7 +148,7 @@ export function ChecklistView({
                   </span>
                   <span
                     className={`mt-1 block text-xs font-semibold uppercase tracking-[0.14em] ${
-                      item.checked ? "text-blue-600" : "text-slate-400"
+                      item.checked ? "text-orange-700" : "text-slate-400"
                     }`}
                   >
                     {item.checked ? "챙겼어요" : "아직이에요"}

@@ -166,34 +166,32 @@ export default function HomePage() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-50 px-5 py-8 text-slate-950 md:px-6 md:py-10">
-      <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-6xl flex-col justify-center gap-6">
-        <section className="animate-packup-enter rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_18px_60px_rgba(15,23,42,0.06)] md:p-8">
-          <span className="inline-flex rounded-full bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-600">
+    <main className="min-h-screen bg-orange-50 px-5 py-8 text-slate-950 md:px-6 md:py-10">
+      <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-6xl flex-col justify-center gap-5">
+        <section className="animate-packup-enter rounded-3xl border border-orange-100 bg-white p-6 shadow-[0_18px_60px_rgba(124,45,18,0.08)] md:p-8">
+          <span className="inline-flex rounded-full bg-orange-100 px-4 py-2 text-sm font-semibold text-orange-700">
             PackUp 준비 도우미
           </span>
-          <div className="mt-6 grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+          <div className="mt-6 grid gap-7 lg:grid-cols-[1.35fr_0.65fr] lg:items-end">
             <div className="space-y-4">
               <p className="font-[family-name:var(--font-display)] text-4xl font-bold leading-tight text-slate-950 md:text-6xl">
-                어떤 준비를
+                준비할 상황을
                 <br />
-                할까요?
+                골라주세요
               </p>
-              <p className="max-w-2xl text-base leading-7 text-slate-600 md:text-lg md:leading-8">
-                상황을 고르면 필요한 준비물을 바로 만들어드릴게요. 체크하면서 하나씩
-                챙기고, 자주 쓰는 리스트는 저장해두세요.
+              <p className="max-w-2xl text-base leading-7 text-slate-600 md:text-lg">
+                상황 선택부터 체크리스트 생성까지 바로 이어집니다.
               </p>
             </div>
-            <div className="rounded-2xl bg-slate-50 p-5 md:p-6">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-blue-600">
-                지금 할 수 있는 일
+            <div className="rounded-2xl bg-orange-50 p-5 md:p-6">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-orange-700">
+                다음 단계
               </p>
               <p className="mt-3 text-2xl font-bold text-slate-950">
-                고르고, 체크하고, 다시 쓰기
+                고르면 바로 생성돼요
               </p>
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                준비 상황을 고르면 새 리스트가 만들어져요. 저장해두면 다음에도 같은
-                준비를 빠르게 시작할 수 있어요.
+                아래 카드에서 하나를 선택해 준비물을 확인하세요.
               </p>
             </div>
           </div>
@@ -201,7 +199,7 @@ export default function HomePage() {
 
         <ScenarioSelector onSelectScenario={handleScenarioSelect} />
 
-        <section className="animate-packup-enter rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_14px_44px_rgba(15,23,42,0.05)] md:p-8">
+        <section className="animate-packup-enter rounded-3xl border border-orange-100 bg-white p-6 shadow-[0_14px_44px_rgba(124,45,18,0.06)] md:p-8">
           <ChecklistSectionHeader checklist={currentChecklist} />
 
           <ChecklistActionBar
@@ -217,19 +215,18 @@ export default function HomePage() {
           />
         </section>
 
-        <section className="animate-packup-enter rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_14px_44px_rgba(15,23,42,0.05)] md:p-8">
+        <section className="animate-packup-enter rounded-3xl border border-slate-200 bg-white/80 p-6 shadow-[0_10px_34px_rgba(15,23,42,0.04)] md:p-8">
           <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">
                 저장한 리스트
               </p>
-              <h2 className="mt-2 text-3xl font-bold text-slate-950">
+              <h2 className="mt-2 text-2xl font-bold text-slate-950 md:text-3xl">
                 저장한 준비 리스트
               </h2>
             </div>
             <p className="max-w-xl text-sm leading-6 text-slate-500">
-              자주 쓰는 준비 리스트를 이 기기에 저장해둘 수 있어요. 필요할 때 다시
-              불러오고, 안 쓰는 리스트는 정리해요.
+              저장한 리스트를 다시 불러오거나 정리해요.
             </p>
           </div>
 

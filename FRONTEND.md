@@ -112,3 +112,12 @@ src/
 - Checklist template titles and starter item names are also Korean so newly generated lists do not feel mixed-language.
 - `globals.css` defines a small `animate-packup-enter` utility for soft fade/slide entry.
 - Motion stays limited to card entry, status pill appearance, hover lift, and checked item color transitions.
+
+## 2026-04-26 update: color and UX refresh
+
+- State ownership remains unchanged: `src/app/page.tsx` still owns `currentChecklist`, `savedChecklists`, persistence effects, and action handlers.
+- localStorage keys and saved checklist shape are unchanged.
+- The UI now uses warm orange as the primary visual color and rose only for action buttons or explicit CTA text.
+- `ScenarioSelector` is promoted into a highlighted section so the first user action is visually obvious.
+- `ChecklistView` derives progress UI from existing `checklist.items`; it does not add new state or change checklist data.
+- `globals.css` adds `animate-packup-check` for a small checked-item scale response.
