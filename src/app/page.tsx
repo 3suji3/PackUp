@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import { ChecklistActionBar } from "@/features/checklists/components/ChecklistActionBar";
+import { ChecklistSectionHeader } from "@/features/checklists/components/ChecklistSectionHeader";
 import { ChecklistView } from "@/features/checklists/components/ChecklistView";
 import { SavedChecklistList } from "@/features/checklists/components/SavedChecklistList";
 import { ScenarioSelector } from "@/features/checklists/components/ScenarioSelector";
@@ -14,10 +16,13 @@ import {
 } from "@/features/checklists/storage";
 import type { Checklist, Scenario } from "@/types/checklist";
 
+const FEEDBACK_RESET_DELAY_MS = 2800;
+
 export default function HomePage() {
   const [currentChecklist, setCurrentChecklist] = useState<Checklist | null>(null);
   const [savedChecklists, setSavedChecklists] = useState<Checklist[]>([]);
   const [hasRestoredChecklist, setHasRestoredChecklist] = useState(false);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
   useEffect(() => {
     queueMicrotask(() => {
@@ -43,43 +48,60 @@ export default function HomePage() {
     saveSavedChecklists(savedChecklists);
   }, [savedChecklists, hasRestoredChecklist]);
 
-  const handleScenarioSelect = (scenario: Scenario) => {
-    setCurrentChecklist(createChecklist(scenario));
+  useEffect(() => {
+    if (!statusMessage) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setStatusMessage(null);
+    }, FEEDBACK_RESET_DELAY_MS);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [statusMessage]);
+
+  const showStatusMessage = (message: string) => {
+    setStatusMessage(message);
   };
 
-  const handleToggleItem = (itemId: string) => {
-    setCurrentChecklist((prevChecklist) => {
-      if (!prevChecklist) {
-        return prevChecklist;
+  const handleScenarioSelect = (scenario: Scenario) => {
+    setCurrentChecklist(createChecklist(scenario));
+    showStatusMessage("New checklist created. Review it and save it if you want to reuse it.");
+  };
+
+  const handleToggleChecklistItem = (itemId: string) => {
+    setCurrentChecklist((previousChecklist) => {
+      if (!previousChecklist) {
+        return previousChecklist;
       }
 
       return {
-        ...prevChecklist,
+        ...previousChecklist,
         updatedAt: Date.now(),
-        items: prevChecklist.items.map((item) =>
+        items: previousChecklist.items.map((item) =>
           item.id === itemId ? { ...item, checked: !item.checked } : item,
         ),
       };
     });
   };
 
-  const handleAddItem = (itemName: string) => {
+  const handleAddChecklistItem = (itemName: string) => {
     const trimmedItemName = itemName.trim();
 
     if (!trimmedItemName) {
       return;
     }
 
-    setCurrentChecklist((prevChecklist) => {
-      if (!prevChecklist) {
-        return prevChecklist;
+    setCurrentChecklist((previousChecklist) => {
+      if (!previousChecklist) {
+        return previousChecklist;
       }
 
       return {
-        ...prevChecklist,
+        ...previousChecklist,
         updatedAt: Date.now(),
         items: [
-          ...prevChecklist.items,
+          ...previousChecklist.items,
           {
             id: crypto.randomUUID(),
             name: trimmedItemName,
@@ -88,25 +110,29 @@ export default function HomePage() {
         ],
       };
     });
+
+    showStatusMessage(`Added "${trimmedItemName}" to the current checklist.`);
   };
 
-  const handleSaveChecklist = () => {
+  const handleSaveCurrentChecklist = () => {
     if (!currentChecklist) {
       return;
     }
 
-    setSavedChecklists((prevChecklists) => {
-      const nextChecklists = prevChecklists.filter(
+    setSavedChecklists((previousChecklists) => {
+      const remainingChecklists = previousChecklists.filter(
         (checklist) => checklist.id !== currentChecklist.id,
       );
 
-      return [currentChecklist, ...nextChecklists].sort(
-        (left, right) => right.updatedAt - left.updatedAt,
+      return [currentChecklist, ...remainingChecklists].sort(
+        (leftChecklist, rightChecklist) => rightChecklist.updatedAt - leftChecklist.updatedAt,
       );
     });
+
+    showStatusMessage(`Saved "${currentChecklist.title}" to your checklist list.`);
   };
 
-  const handleSelectSavedChecklist = (checklistId: string) => {
+  const handleLoadSavedChecklist = (checklistId: string) => {
     const selectedChecklist =
       savedChecklists.find((checklist) => checklist.id === checklistId) ?? null;
 
@@ -115,20 +141,28 @@ export default function HomePage() {
     }
 
     setCurrentChecklist(selectedChecklist);
+    showStatusMessage(`Loaded "${selectedChecklist.title}" as the current checklist.`);
   };
 
   const handleDeleteSavedChecklist = (checklistId: string) => {
-    setSavedChecklists((prevChecklists) =>
-      prevChecklists.filter((checklist) => checklist.id !== checklistId),
+    const deletedChecklist =
+      savedChecklists.find((checklist) => checklist.id === checklistId) ?? null;
+
+    setSavedChecklists((previousChecklists) =>
+      previousChecklists.filter((checklist) => checklist.id !== checklistId),
     );
 
-    setCurrentChecklist((prevChecklist) => {
-      if (!prevChecklist || prevChecklist.id !== checklistId) {
-        return prevChecklist;
+    setCurrentChecklist((previousChecklist) => {
+      if (!previousChecklist || previousChecklist.id !== checklistId) {
+        return previousChecklist;
       }
 
       return null;
     });
+
+    if (deletedChecklist) {
+      showStatusMessage(`Deleted "${deletedChecklist.title}" from your saved checklists.`);
+    }
   };
 
   return (
@@ -169,40 +203,18 @@ export default function HomePage() {
         <ScenarioSelector onSelectScenario={handleScenarioSelect} />
 
         <section className="rounded-[32px] border border-stone-200/70 bg-white/85 p-8 shadow-[0_16px_48px_rgba(120,94,70,0.08)]">
-          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-400">
-                Generated Checklist
-              </p>
-              <h2 className="mt-2 text-3xl font-bold text-stone-900">
-                {currentChecklist ? currentChecklist.title : "No checklist selected yet"}
-              </h2>
-            </div>
-            <p className="max-w-xl text-sm leading-6 text-stone-500">
-              {currentChecklist
-                ? "This is the current working checklist. You can toggle items and add your own entries here."
-                : "Choose a scenario card to create a checklist and review it in this section."}
-            </p>
-          </div>
+          <ChecklistSectionHeader checklist={currentChecklist} />
 
-          <div className="mt-6 flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={handleSaveChecklist}
-              disabled={!currentChecklist}
-              className="inline-flex h-11 items-center justify-center rounded-[16px] bg-stone-900 px-5 text-sm font-semibold text-white transition hover:bg-orange-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-stone-300 disabled:text-stone-100"
-            >
-              Save current checklist
-            </button>
-            <p className="flex items-center text-sm leading-6 text-stone-500">
-              Saved checklists can be loaded again from the list below.
-            </p>
-          </div>
+          <ChecklistActionBar
+            canSave={Boolean(currentChecklist)}
+            feedbackMessage={statusMessage}
+            onSave={handleSaveCurrentChecklist}
+          />
 
           <ChecklistView
             checklist={currentChecklist}
-            onToggleItem={handleToggleItem}
-            onAddItem={handleAddItem}
+            onToggleItem={handleToggleChecklistItem}
+            onAddItem={handleAddChecklistItem}
           />
         </section>
 
@@ -226,7 +238,7 @@ export default function HomePage() {
             <SavedChecklistList
               savedChecklists={savedChecklists}
               currentChecklistId={currentChecklist?.id ?? null}
-              onSelectChecklist={handleSelectSavedChecklist}
+              onSelectChecklist={handleLoadSavedChecklist}
               onDeleteChecklist={handleDeleteSavedChecklist}
             />
           </div>

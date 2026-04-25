@@ -112,3 +112,9 @@ export interface Checklist {
   2. clear `currentChecklist` if it matches the deleted checklist id
 - Existing persistence effects continue to sync both updated states into `localStorage`, so no extra delete-specific storage layer is added.
 - Scenario card markup is moved into `src/features/checklists/components/ScenarioSelector.tsx` to keep the page component from growing further without changing state ownership.
+
+## 2026-04-25 update: page-level feedback message
+
+- UI feedback for create, add, load, save, and delete actions is kept as a local string state in `src/app/page.tsx`.
+- The message is presentation-only and does not change the saved data shape or `localStorage` structure.
+- `ChecklistSectionHeader` and `ChecklistActionBar` reduce page rendering size, while state ownership and persistence flow remain in the page component.

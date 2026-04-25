@@ -16,7 +16,11 @@ export function SavedChecklistList({
   if (savedChecklists.length === 0) {
     return (
       <div className="rounded-[24px] border border-dashed border-stone-300 bg-stone-50 px-5 py-8 text-center text-sm leading-7 text-stone-500">
-        No saved checklist yet. Save the current checklist to reuse it here later.
+        <p className="font-semibold text-stone-700">No saved checklist yet.</p>
+        <p className="mt-2">
+          Save a checklist after you create or update it. Saved entries stay available
+          in this list until you delete them.
+        </p>
       </div>
     );
   }
@@ -44,7 +48,7 @@ export function SavedChecklistList({
                   <button
                     type="button"
                     onClick={() => onSelectChecklist(checklist.id)}
-                    className="mt-2 block w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                    className="mt-2 block w-full rounded-[16px] text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white active:scale-[0.99]"
                   >
                     <h3 className="truncate text-lg font-bold text-stone-900">
                       {checklist.title}
@@ -64,7 +68,7 @@ export function SavedChecklistList({
                   <button
                     type="button"
                     onClick={() => onDeleteChecklist(checklist.id)}
-                    className="mt-3 inline-flex h-10 items-center justify-center rounded-[14px] border border-stone-200 px-4 text-sm font-semibold text-stone-600 transition hover:border-red-300 hover:bg-red-50 hover:text-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2"
+                    className="mt-3 inline-flex h-10 items-center justify-center rounded-[14px] border border-stone-200 px-4 text-sm font-semibold text-stone-600 transition duration-150 hover:border-red-300 hover:bg-red-50 hover:text-red-600 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2"
                   >
                     Delete
                   </button>
