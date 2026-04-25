@@ -33,7 +33,11 @@ export function ChecklistView({
   if (!checklist) {
     return (
       <div className="mt-6 rounded-[24px] border border-dashed border-stone-300 bg-stone-50 px-5 py-8 text-center text-sm leading-7 text-stone-500">
-        상황을 선택하면 체크리스트가 생성돼요. 위 카드 중 하나를 눌러서 바로 시작해보세요.
+        <p className="font-semibold text-stone-700">No checklist yet.</p>
+        <p className="mt-2">
+          Pick one of the scenario cards above to create a starter checklist. You can
+          check items, add your own item, and save it after that.
+        </p>
       </div>
     );
   }
@@ -79,21 +83,27 @@ export function ChecklistView({
               type="text"
               value={newItemName}
               onChange={(event) => setNewItemName(event.target.value)}
-              placeholder="직접 챙길 준비물을 추가해보세요"
+              placeholder="Add an item you want to pack yourself"
               className="h-12 flex-1 rounded-[16px] border border-stone-200 bg-stone-50 px-4 text-sm text-stone-900 outline-none transition focus:border-orange-300 focus:bg-white"
             />
             <button
               type="submit"
-              className="inline-flex h-12 items-center justify-center rounded-[16px] bg-stone-900 px-5 text-sm font-semibold text-white transition hover:bg-orange-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2"
+              className="inline-flex h-12 items-center justify-center rounded-[16px] bg-stone-900 px-5 text-sm font-semibold text-white transition duration-150 hover:bg-orange-500 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2"
             >
-              항목 추가
+              Add item
             </button>
           </form>
         </div>
         <ul className="mt-4 grid gap-3">
           {checklist.items.map((item) => (
             <li key={item.id}>
-              <label className="flex cursor-pointer items-center gap-4 rounded-[20px] border border-stone-200 bg-stone-50 px-4 py-4 text-sm text-stone-700 transition-colors hover:border-orange-300 hover:bg-orange-50/60">
+              <label
+                className={`flex cursor-pointer items-center gap-4 rounded-[20px] border px-4 py-4 text-sm text-stone-700 transition-colors ${
+                  item.checked
+                    ? "border-orange-200 bg-orange-50/70"
+                    : "border-stone-200 bg-stone-50 hover:border-orange-300 hover:bg-orange-50/60"
+                }`}
+              >
                 <input
                   type="checkbox"
                   checked={item.checked}

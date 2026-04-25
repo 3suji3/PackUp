@@ -95,3 +95,12 @@ src/
   - saved checklist deletion
 - `SavedChecklistList` remains a presentational component and now exposes both select and delete actions per saved checklist row.
 - When the user deletes the saved checklist that is currently loaded, `currentChecklist` is reset to `null` so the working area returns to the empty state instead of showing deleted data.
+
+## 2026-04-25 update: lightweight UX cleanup
+
+- `page.tsx` still owns all state and storage-related handlers.
+- Only two small UI units are additionally split from the page:
+  - `ChecklistSectionHeader.tsx`
+  - `ChecklistActionBar.tsx`
+- Save, delete, load, create, and add-item actions now share one page-level status message so the user can see recent state changes without adding global state.
+- Empty-state copy in both checklist areas is more explicit, while button feedback is limited to disabled, hover, focus, and active states to stay within MVP scope.
