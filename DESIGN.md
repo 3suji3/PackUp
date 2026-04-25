@@ -108,3 +108,13 @@ PackUp은 단순한 체크리스트 앱이 아니라
 - 복잡한 UI 금지
 - 색상 과다 사용 금지
 - 애니메이션 과도 사용 금지
+---
+
+## 2026-04-26 update: Korean microcopy and light motion
+
+- PackUp의 주요 UI 문구는 한국어 중심으로 작성한다.
+- 문구 톤은 명령형보다 도와주는 느낌을 우선한다.
+- Toss-style minimal 방향은 유지하되, 너무 차가운 SaaS 문구는 피한다.
+- 색상은 white / slate / blue 중심으로 제한한다.
+- 애니메이션은 Tailwind transition과 작은 CSS keyframes만 사용한다.
+- 카드 등장, 상태 메시지 표시, 체크 상태 변화에만 짧고 부드러운 움직임을 둔다.

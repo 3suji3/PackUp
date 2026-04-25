@@ -104,3 +104,11 @@ src/
   - `ChecklistActionBar.tsx`
 - Save, delete, load, create, and add-item actions now share one page-level status message so the user can see recent state changes without adding global state.
 - Empty-state copy in both checklist areas is more explicit, while button feedback is limited to disabled, hover, focus, and active states to stay within MVP scope.
+
+## 2026-04-26 update: Korean microcopy and minimal animation
+
+- The page state, localStorage keys, checklist data shape, and action handlers remain unchanged.
+- User-facing copy in the hero, scenario cards, checklist section, empty states, buttons, saved list, status message, and checked labels is now Korean-first.
+- Checklist template titles and starter item names are also Korean so newly generated lists do not feel mixed-language.
+- `globals.css` defines a small `animate-packup-enter` utility for soft fade/slide entry.
+- Motion stays limited to card entry, status pill appearance, hover lift, and checked item color transitions.

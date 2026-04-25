@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fffaf5;
-  --foreground: #1f1a17;
-  --font-body: "Trebuchet MS", "Segoe UI", sans-serif;
-  --font-display: "Arial Rounded MT Bold", "Trebuchet MS", sans-serif;
+  --background: #f8fafc;
+  --foreground: #111827;
+  --font-body: "Inter", "Segoe UI", sans-serif;
+  --font-display: "Inter", "Segoe UI", sans-serif;
 }
 
 * {
@@ -36,6 +36,22 @@ select {
 }
 
 ::selection {
-  background: #ffd7a8;
-  color: #3f2d22;
+  background: #dbeafe;
+  color: #1e3a8a;
+}
+
+@keyframes packup-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-packup-enter {
+  animation: packup-enter 220ms ease-out both;
 }
