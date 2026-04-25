@@ -1,4 +1,10 @@
-import type { Checklist } from "@/types/checklist";
+import type { Checklist, Scenario } from "@/types/checklist";
+
+const scenarioLabels: Record<Scenario, string> = {
+  travel: "여행",
+  school: "학교",
+  gym: "운동",
+};
 
 interface SavedChecklistListProps {
   savedChecklists: Checklist[];
@@ -15,11 +21,11 @@ export function SavedChecklistList({
 }: SavedChecklistListProps) {
   if (savedChecklists.length === 0) {
     return (
-      <div className="rounded-[24px] border border-dashed border-stone-300 bg-stone-50 px-5 py-8 text-center text-sm leading-7 text-stone-500">
-        <p className="font-semibold text-stone-700">No saved checklist yet.</p>
+      <div className="animate-packup-enter rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-5 py-8 text-center text-sm leading-7 text-slate-500">
+        <p className="font-semibold text-slate-700">아직 저장한 리스트가 없어요</p>
         <p className="mt-2">
-          Save a checklist after you create or update it. Saved entries stay available
-          in this list until you delete them.
+          준비 리스트를 저장하면 여기에 모아둘게요. 다음에 같은 준비를 할 때 바로
+          불러올 수 있어요.
         </p>
       </div>
     );
@@ -34,43 +40,43 @@ export function SavedChecklistList({
         return (
           <li key={checklist.id}>
             <div
-              className={`rounded-[24px] border px-5 py-4 transition ${
+              className={`animate-packup-enter rounded-3xl border px-5 py-4 transition duration-200 ${
                 isActive
-                  ? "border-orange-300 bg-orange-50/80 shadow-[0_12px_30px_rgba(199,144,98,0.14)]"
-                  : "border-stone-200 bg-white hover:border-orange-300 hover:bg-orange-50/50"
+                  ? "border-blue-200 bg-blue-50 shadow-[0_12px_30px_rgba(37,99,235,0.10)]"
+                  : "border-slate-200 bg-white hover:border-blue-200 hover:bg-blue-50/40"
               }`}
             >
               <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-stone-400">
-                    {checklist.scenario}
+                  <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">
+                    {scenarioLabels[checklist.scenario]}
                   </p>
                   <button
                     type="button"
                     onClick={() => onSelectChecklist(checklist.id)}
-                    className="mt-2 block w-full rounded-[16px] text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white active:scale-[0.99]"
+                    className="mt-2 block w-full rounded-xl text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white active:scale-[0.99]"
                   >
-                    <h3 className="truncate text-lg font-bold text-stone-900">
+                    <h3 className="truncate text-lg font-bold text-slate-950">
                       {checklist.title}
                     </h3>
-                    <p className="mt-2 text-sm leading-6 text-stone-500">
-                      {checkedCount}/{checklist.items.length} items checked
+                    <p className="mt-2 text-sm leading-6 text-slate-500">
+                      {checklist.items.length}개 중 {checkedCount}개 챙겼어요
                     </p>
                   </button>
                 </div>
-                <div className="shrink-0 text-sm text-stone-500 md:text-right">
-                  <p className="font-semibold text-stone-700">
+                <div className="shrink-0 text-sm text-slate-500 md:text-right">
+                  <p className="font-semibold text-slate-700">
                     {new Date(checklist.updatedAt).toLocaleString("ko-KR")}
                   </p>
                   <p className="mt-1">
-                    {isActive ? "Currently selected" : "Saved checklist"}
+                    {isActive ? "지금 보고 있는 리스트" : "저장한 리스트"}
                   </p>
                   <button
                     type="button"
                     onClick={() => onDeleteChecklist(checklist.id)}
-                    className="mt-3 inline-flex h-10 items-center justify-center rounded-[14px] border border-stone-200 px-4 text-sm font-semibold text-stone-600 transition duration-150 hover:border-red-300 hover:bg-red-50 hover:text-red-600 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2"
+                    className="mt-3 inline-flex h-10 items-center justify-center rounded-xl border border-slate-200 px-4 text-sm font-semibold text-slate-600 transition duration-150 hover:border-red-200 hover:bg-red-50 hover:text-red-600 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2"
                   >
-                    Delete
+                    삭제
                   </button>
                 </div>
               </div>
